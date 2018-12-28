@@ -17,10 +17,13 @@
 #import "AIRMapCircle.h"
 #import <QuartzCore/QuartzCore.h>
 #import "AIRMapUrlTile.h"
+#import "AIRMapLocalTile.h"
+#import "AIRMapOverlay.h"
 
 const CLLocationDegrees AIRMapDefaultSpan = 0.005;
 const NSTimeInterval AIRMapRegionChangeObserveInterval = 0.1;
 const CGFloat AIRMapZoomBoundBuffer = 0.01;
+const NSInteger AIRMapMaxZoomLevel = 20;
 
 
 @interface MKMapView (UIGestureRecognizer)
@@ -46,6 +49,7 @@ const CGFloat AIRMapZoomBoundBuffer = 0.01;
     UIView *_legalLabel;
     CLLocationManager *_locationManager;
     BOOL _initialRegionSet;
+    BOOL _initialCameraSet;
 
     // Array to manually track RN subviews
     //
@@ -79,6 +83,9 @@ const CGFloat AIRMapZoomBoundBuffer = 0.01;
         // be identical to the built-in callout view (which has a private API)
         self.calloutView = [SMCalloutView platformCalloutView];
         self.calloutView.delegate = self;
+
+        self.minZoomLevel = 0;
+        self.maxZoomLevel = AIRMapMaxZoomLevel;
     }
     return self;
 }
@@ -86,6 +93,14 @@ const CGFloat AIRMapZoomBoundBuffer = 0.01;
 - (void)dealloc
 {
     [_regionChangeObserveTimer invalidate];
+}
+
+-(void)addSubview:(UIView *)view {
+    if([view isKindOfClass:[AIRMapMarker class]]) {
+        [self addAnnotation:(id <MKAnnotation>)view];
+    } else {
+        [super addSubview:view];
+    }
 }
 
 #pragma clang diagnostic push
@@ -102,9 +117,16 @@ const CGFloat AIRMapZoomBoundBuffer = 0.01;
         ((AIRMapPolygon *)subview).map = self;
         [self addOverlay:(id<MKOverlay>)subview];
     } else if ([subview isKindOfClass:[AIRMapCircle class]]) {
+        ((AIRMapCircle *)subview).map = self;
         [self addOverlay:(id<MKOverlay>)subview];
     } else if ([subview isKindOfClass:[AIRMapUrlTile class]]) {
         ((AIRMapUrlTile *)subview).map = self;
+        [self addOverlay:(id<MKOverlay>)subview];
+    } else if ([subview isKindOfClass:[AIRMapLocalTile class]]) {
+        ((AIRMapLocalTile *)subview).map = self;
+        [self addOverlay:(id<MKOverlay>)subview];
+    } else if ([subview isKindOfClass:[AIRMapOverlay class]]) {
+        ((AIRMapOverlay *)subview).map = self;
         [self addOverlay:(id<MKOverlay>)subview];
     } else {
         NSArray<id<RCTComponent>> *childSubviews = [subview reactSubviews];
@@ -130,6 +152,10 @@ const CGFloat AIRMapZoomBoundBuffer = 0.01;
     } else if ([subview isKindOfClass:[AIRMapCircle class]]) {
         [self removeOverlay:(id <MKOverlay>) subview];
     } else if ([subview isKindOfClass:[AIRMapUrlTile class]]) {
+        [self removeOverlay:(id <MKOverlay>) subview];
+    } else if ([subview isKindOfClass:[AIRMapLocalTile class]]) {
+        [self removeOverlay:(id <MKOverlay>) subview];
+    } else if ([subview isKindOfClass:[AIRMapOverlay class]]) {
         [self removeOverlay:(id <MKOverlay>) subview];
     } else {
         NSArray<id<RCTComponent>> *childSubviews = [subview reactSubviews];
@@ -198,6 +224,25 @@ const CGFloat AIRMapZoomBoundBuffer = 0.01;
 
 #pragma mark Accessors
 
+- (NSArray *)getMapBoundaries
+{
+    MKMapRect mapRect = self.visibleMapRect;
+    
+    CLLocationCoordinate2D northEast = MKCoordinateForMapPoint(MKMapPointMake(MKMapRectGetMaxX(mapRect), mapRect.origin.y));
+    CLLocationCoordinate2D southWest = MKCoordinateForMapPoint(MKMapPointMake(mapRect.origin.x, MKMapRectGetMaxY(mapRect)));
+
+    return @[
+        @[
+            [NSNumber numberWithDouble:northEast.longitude],
+            [NSNumber numberWithDouble:northEast.latitude]
+        ],
+        @[
+            [NSNumber numberWithDouble:southWest.longitude],
+            [NSNumber numberWithDouble:southWest.latitude]
+        ]
+    ];
+}
+
 - (void)setShowsUserLocation:(BOOL)showsUserLocation
 {
     if (self.showsUserLocation != showsUserLocation) {
@@ -248,6 +293,19 @@ const CGFloat AIRMapZoomBoundBuffer = 0.01;
     if (!_initialRegionSet) {
         _initialRegionSet = YES;
         [self setRegion:initialRegion animated:NO];
+    }
+}
+
+- (void)setCamera:(MKMapCamera*)camera animated:(BOOL)animated
+{
+    [super setCamera:camera animated:animated];
+}
+
+
+- (void)setInitialCamera:(MKMapCamera*)initialCamera {
+    if (!_initialCameraSet) {
+        _initialCameraSet = YES;
+        [self setCamera:initialCamera animated:NO];
     }
 }
 
@@ -399,18 +457,18 @@ const CGFloat AIRMapZoomBoundBuffer = 0.01;
 - (void)updateLegalLabelInsets {
     if (_legalLabel) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            CGRect frame = _legalLabel.frame;
-            if (_legalLabelInsets.left) {
-                frame.origin.x = _legalLabelInsets.left;
-            } else if (_legalLabelInsets.right) {
-                frame.origin.x = self.frame.size.width - _legalLabelInsets.right - frame.size.width;
+            CGRect frame = self->_legalLabel.frame;
+            if (self->_legalLabelInsets.left) {
+                frame.origin.x = self->_legalLabelInsets.left;
+            } else if (self->_legalLabelInsets.right) {
+                frame.origin.x = self.frame.size.width - self->_legalLabelInsets.right - frame.size.width;
             }
-            if (_legalLabelInsets.top) {
-                frame.origin.y = _legalLabelInsets.top;
-            } else if (_legalLabelInsets.bottom) {
-                frame.origin.y = self.frame.size.height - _legalLabelInsets.bottom - frame.size.height;
+            if (self->_legalLabelInsets.top) {
+                frame.origin.y = self->_legalLabelInsets.top;
+            } else if (self->_legalLabelInsets.bottom) {
+                frame.origin.y = self.frame.size.height - self->_legalLabelInsets.bottom - frame.size.height;
             }
-            _legalLabel.frame = frame;
+            self->_legalLabel.frame = frame;
         });
     }
 }

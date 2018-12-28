@@ -16,6 +16,7 @@ import MarkerTypes from './examples/MarkerTypes';
 import DraggableMarkers from './examples/DraggableMarkers';
 import PolygonCreator from './examples/PolygonCreator';
 import PolylineCreator from './examples/PolylineCreator';
+import GradientPolylines from './examples/GradientPolylines';
 import AnimatedViews from './examples/AnimatedViews';
 import AnimatedMarkers from './examples/AnimatedMarkers';
 import Callouts from './examples/Callouts';
@@ -24,6 +25,7 @@ import DefaultMarkers from './examples/DefaultMarkers';
 import CustomMarkers from './examples/CustomMarkers';
 import CachedMap from './examples/CachedMap';
 import LoadingMap from './examples/LoadingMap';
+import MapBoundaries from './examples/MapBoundaries';
 import TakeSnapshot from './examples/TakeSnapshot';
 import FitToSuppliedMarkers from './examples/FitToSuppliedMarkers';
 import FitToCoordinates from './examples/FitToCoordinates';
@@ -35,7 +37,14 @@ import MapStyle from './examples/MapStyle';
 import LegalLabel from './examples/LegalLabel';
 import SetNativePropsOverlays from './examples/SetNativePropsOverlays';
 import CustomOverlay from './examples/CustomOverlay';
+import MapKml from './examples/MapKml';
 import BugMarkerWontUpdate from './examples/BugMarkerWontUpdate';
+import ImageOverlayWithAssets from './examples/ImageOverlayWithAssets';
+import ImageOverlayWithURL from './examples/ImageOverlayWithURL';
+import AnimatedNavigation from './examples/AnimatedNavigation';
+import OnPoiClick from './examples/OnPoiClick';
+import IndoorMap from './examples/IndoorMap';
+import CameraControl from './examples/CameraControl';
 
 const IOS = Platform.OS === 'ios';
 const ANDROID = Platform.OS === 'android';
@@ -131,6 +140,7 @@ class App extends React.Component {
       [DraggableMarkers, 'Draggable Markers', true],
       [PolygonCreator, 'Polygon Creator', true],
       [PolylineCreator, 'Polyline Creator', true],
+      [GradientPolylines, 'Gradient Polylines', true],
       [AnimatedViews, 'Animating with MapViews'],
       [AnimatedMarkers, 'Animated Marker Position'],
       [Callouts, 'Custom Callouts', true],
@@ -140,6 +150,7 @@ class App extends React.Component {
       [TakeSnapshot, 'Take Snapshot', true, '(incomplete)'],
       [CachedMap, 'Cached Map'],
       [LoadingMap, 'Map with loading'],
+      [MapBoundaries, 'Get visible map boundaries', true],
       [FitToSuppliedMarkers, 'Focus Map On Markers', true],
       [FitToCoordinates, 'Fit Map To Coordinates', true],
       [LiteMapView, 'Android Lite MapView'],
@@ -149,7 +160,14 @@ class App extends React.Component {
       [LegalLabel, 'Reposition the legal label', true],
       [SetNativePropsOverlays, 'Update native props', true],
       [CustomOverlay, 'Custom Overlay Component', true],
+      [MapKml, 'Load Map with KML', true],
       [BugMarkerWontUpdate, 'BUG: Marker Won\'t Update (Android)', true],
+      [ImageOverlayWithAssets, 'Image Overlay Component with Assets', true],
+      [ImageOverlayWithURL, 'Image Overlay Component with URL', true],
+      [AnimatedNavigation, 'Animated Map Navigation', true],
+      [OnPoiClick, 'On Poi Click', true],
+      [IndoorMap, 'Indoor Map', true],
+      [CameraControl, 'CameraControl', true],
     ]
     // Filter out examples that are not yet supported for Google Maps on iOS.
     .filter(example => ANDROID || (IOS && (example[2] || !this.state.useGoogleMaps)))
@@ -189,4 +207,4 @@ const styles = StyleSheet.create({
   },
 });
 
-module.exports = App;
+export default App;
