@@ -1,5 +1,9 @@
 import React from 'react';
-import { StyleSheet, View, Dimensions } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Dimensions,
+} from 'react-native';
 
 import MapView, { ProviderPropType } from 'react-native-maps';
 
@@ -177,7 +181,8 @@ class MapStyle extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+    };
   }
 
   render() {

@@ -20,8 +20,8 @@ const SPACE = 0.01;
 
 function createMarker(modifier = 1) {
   return {
-    latitude: LATITUDE - SPACE * modifier,
-    longitude: LONGITUDE - SPACE * modifier,
+    latitude: LATITUDE - (SPACE * modifier),
+    longitude: LONGITUDE - (SPACE * modifier),
   };
 }
 
@@ -35,13 +35,6 @@ const MARKERS = [
 const DEFAULT_PADDING = { top: 40, right: 40, bottom: 40, left: 40 };
 
 class FitToCoordinates extends React.Component {
-  async logFrames() {
-    const visMarkersFrames = await this.map.getMarkersFrames(true);
-    console.log('Visible markers frames:', visMarkersFrames);
-    const allMarkersFrames = await this.map.getMarkersFrames();
-    console.log('All markers frames:', allMarkersFrames);
-  }
-
   fitPadding() {
     this.map.fitToCoordinates([MARKERS[2], MARKERS[3]], {
       edgePadding: { top: 100, right: 100, bottom: 100, left: 100 },
@@ -67,9 +60,7 @@ class FitToCoordinates extends React.Component {
     return (
       <View style={styles.container}>
         <MapView
-          ref={ref => {
-            this.map = ref;
-          }}
+          ref={ref => { this.map = ref; }}
           style={styles.map}
           initialRegion={{
             latitude: LATITUDE,
@@ -79,7 +70,10 @@ class FitToCoordinates extends React.Component {
           }}
         >
           {MARKERS.map((marker, i) => (
-            <Marker key={i} identifier={`id${i}`} coordinate={marker} />
+            <Marker
+              key={i}
+              coordinate={marker}
+            />
           ))}
         </MapView>
         <View style={styles.buttonContainer}>
@@ -100,12 +94,6 @@ class FitToCoordinates extends React.Component {
             style={[styles.bubble, styles.button]}
           >
             <Text>Fit All Markers</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => this.logFrames()}
-            style={[styles.bubble, styles.button]}
-          >
-            <Text>Log markers frames</Text>
           </TouchableOpacity>
         </View>
       </View>

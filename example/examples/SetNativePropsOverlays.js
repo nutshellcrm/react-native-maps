@@ -7,12 +7,7 @@ import {
   Dimensions,
 } from 'react-native';
 
-import MapView, {
-  Circle,
-  Polygon,
-  Polyline,
-  ProviderPropType,
-} from 'react-native-maps';
+import MapView, { Circle, Polygon, Polyline, ProviderPropType } from 'react-native-maps';
 
 const { width, height } = Dimensions.get('window');
 
@@ -61,15 +56,15 @@ class SetNativePropsOverlays extends React.Component {
           longitude: LONGITUDE - SPACE,
         },
         {
-          latitude: LATITUDE - 2 * SPACE,
-          longitude: LONGITUDE + 2 * SPACE,
+          latitude: LATITUDE - (2 * SPACE),
+          longitude: LONGITUDE + (2 * SPACE),
         },
         {
           latitude: LATITUDE - SPACE,
           longitude: LONGITUDE - SPACE,
         },
         {
-          latitude: LATITUDE - 2 * SPACE,
+          latitude: LATITUDE - (2 * SPACE),
           longitude: LONGITUDE - SPACE,
         },
       ],
@@ -93,9 +88,7 @@ class SetNativePropsOverlays extends React.Component {
           initialRegion={region}
         >
           <Circle
-            ref={ref => {
-              this.circle = ref;
-            }}
+            ref={ref => { this.circle = ref; }}
             center={circle.center}
             radius={circle.radius}
             fillColor="rgba(255, 255, 255, 0.6)"
@@ -104,47 +97,31 @@ class SetNativePropsOverlays extends React.Component {
             strokeWidth={3}
           />
           <Polygon
-            ref={ref => {
-              this.polygon = ref;
-            }}
+            ref={ref => { this.polygon = ref; }}
             coordinates={polygon}
             fillColor="rgba(255, 255, 255, 0.6)"
             strokeColor="green"
             strokeWidth={2}
           />
           <Polyline
-            ref={ref => {
-              this.polyline = ref;
-            }}
+            ref={ref => { this.polyline = ref; }}
             coordinates={polyline}
             strokeColor="green"
             strokeWidth={3}
           />
         </MapView>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            onPress={() => {
-              this.handleColorChange('green');
-            }}
-          >
+          <TouchableOpacity onPress={() => { this.handleColorChange('green'); }}>
             <View style={styles.bubble}>
               <Text>Green</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              this.handleColorChange('black');
-            }}
-          >
+          <TouchableOpacity onPress={() => { this.handleColorChange('black'); }}>
             <View style={styles.bubble}>
               <Text>Black</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              this.handleColorChange('red');
-            }}
-          >
+          <TouchableOpacity onPress={() => { this.handleColorChange('red'); }}>
             <View style={styles.bubble}>
               <Text>Red</Text>
             </View>

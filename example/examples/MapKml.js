@@ -1,5 +1,9 @@
 import React from 'react';
-import { StyleSheet, View, Dimensions } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Dimensions,
+} from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 
 const { width, height } = Dimensions.get('window');
@@ -35,9 +39,7 @@ class MapKml extends React.Component {
     return (
       <View style={styles.container}>
         <MapView
-          ref={ref => {
-            this.map = ref;
-          }}
+          ref={(ref) => { this.map = ref; }}
           provider={this.props.provider}
           style={styles.map}
           initialRegion={this.state.region}

@@ -55,7 +55,10 @@ class PolylineCreator extends React.Component {
       this.setState({
         editing: {
           ...editing,
-          coordinates: [...editing.coordinates, e.nativeEvent.coordinate],
+          coordinates: [
+            ...editing.coordinates,
+            e.nativeEvent.coordinate,
+          ],
         },
       });
     }
@@ -80,7 +83,7 @@ class PolylineCreator extends React.Component {
               strokeWidth={1}
             />
           ))}
-          {this.state.editing && (
+          {this.state.editing &&
             <Polyline
               key="editingPolyline"
               coordinates={this.state.editing.coordinates}
@@ -88,7 +91,7 @@ class PolylineCreator extends React.Component {
               fillColor="rgba(255,0,0,0.5)"
               strokeWidth={1}
             />
-          )}
+          }
         </MapView>
         <View style={styles.buttonContainer}>
           {this.state.editing && (

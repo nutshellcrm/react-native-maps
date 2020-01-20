@@ -8,11 +8,7 @@ import {
   Platform,
 } from 'react-native';
 
-import MapView, {
-  ProviderPropType,
-  Marker,
-  AnimatedRegion,
-} from 'react-native-maps';
+import MapView, { ProviderPropType, Marker, AnimatedRegion } from 'react-native-maps';
 
 const screen = Dimensions.get('window');
 
@@ -37,8 +33,8 @@ class AnimatedMarkers extends React.Component {
   animate() {
     const { coordinate } = this.state;
     const newCoordinate = {
-      latitude: LATITUDE + (Math.random() - 0.5) * (LATITUDE_DELTA / 2),
-      longitude: LONGITUDE + (Math.random() - 0.5) * (LONGITUDE_DELTA / 2),
+      latitude: LATITUDE + ((Math.random() - 0.5) * (LATITUDE_DELTA / 2)),
+      longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2)),
     };
 
     if (Platform.OS === 'android') {
@@ -64,9 +60,7 @@ class AnimatedMarkers extends React.Component {
           }}
         >
           <Marker.Animated
-            ref={marker => {
-              this.marker = marker;
-            }}
+            ref={marker => { this.marker = marker; }}
             coordinate={this.state.coordinate}
           />
         </MapView>

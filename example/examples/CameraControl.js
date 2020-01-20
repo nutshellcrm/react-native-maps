@@ -1,17 +1,29 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, Text, Alert } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Text,
+  Alert,
+} from 'react-native';
 
 import MapView, { ProviderPropType } from 'react-native-maps';
 
 const LATITUDE = 37.78825;
 const LONGITUDE = -122.4324;
 
+
 class CameraControl extends React.Component {
   async getCamera() {
     const camera = await this.map.getCamera();
-    Alert.alert('Current camera', JSON.stringify(camera), [{ text: 'OK' }], {
-      cancelable: true,
-    });
+    Alert.alert(
+      'Current camera',
+      JSON.stringify(camera),
+      [
+        { text: 'OK' },
+      ],
+      { cancelable: true }
+    );
   }
 
   async setCamera() {
@@ -81,6 +93,7 @@ class CameraControl extends React.Component {
 CameraControl.propTypes = {
   provider: ProviderPropType,
 };
+
 
 const styles = StyleSheet.create({
   container: {

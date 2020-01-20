@@ -30,22 +30,15 @@ class MarkerTypes extends React.Component {
   }
 
   takeSnapshot() {
-    this.map.takeSnapshot(
-      300,
-      300,
-      {
-        latitude: LATITUDE - SPACE,
-        longitude: LONGITUDE - SPACE,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01 * ASPECT_RATIO,
-      },
-      (err, data) => {
-        if (err) {
-          console.log(err);
-        }
-        this.setState({ mapSnapshot: data });
-      }
-    );
+    this.map.takeSnapshot(300, 300, {
+      latitude: LATITUDE - SPACE,
+      longitude: LONGITUDE - SPACE,
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01 * ASPECT_RATIO,
+    }, (err, data) => {
+      if (err) console.log(err);
+      this.setState({ mapSnapshot: data });
+    });
   }
 
   render() {
@@ -53,9 +46,7 @@ class MarkerTypes extends React.Component {
       <View style={styles.container}>
         <MapView
           provider={this.props.provider}
-          ref={ref => {
-            this.map = ref;
-          }}
+          ref={ref => { this.map = ref; }}
           style={styles.map}
           initialRegion={{
             latitude: LATITUDE,
@@ -92,17 +83,17 @@ class MarkerTypes extends React.Component {
             <Text>Take snapshot</Text>
           </TouchableOpacity>
         </View>
-        {this.state.mapSnapshot && (
+        {this.state.mapSnapshot &&
           <TouchableOpacity
             style={[styles.container, styles.overlay]}
             onPress={() => this.setState({ mapSnapshot: null })}
           >
             <Image
               source={{ uri: this.state.mapSnapshot.uri }}
-              style={styles.mapSnapshot}
+              style={{ width: 300, height: 300 }}
             />
           </TouchableOpacity>
-        )}
+        }
       </View>
     );
   }
@@ -142,7 +133,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
   },
-  mapSnapshot: { width: 300, height: 300 },
 });
 
 export default MarkerTypes;
